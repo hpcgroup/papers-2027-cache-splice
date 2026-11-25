@@ -1,0 +1,32 @@
+# Strong scaling of the attention-only Exphormer (4 layers, width 128, 4 heads; LN, TF32, bf16 wire, pre-collective
+# sync), ms per epoch.  GT3D = configuration picked by the model; 2D = best fused 2D grid with P_o > 1; 1D = grid (P,1)
+# (GP-AG, x-gather); Head only = (1,1,P), P <= H = 4 (GP-A2A); Ring = ring layer on (P,1).
+# Sources: gt3d/RESULTS.md 2026-10-18 (head model), 2026-10-26 (ring, 1D); 16x1 products from job 60177039.
+# 64-GPU 1D / ring points: job 60317213 (16 A100-40GB nodes).  TODO: 8 / 32 GPUs; blank = not measured yet.
+graph,series,gpus,ms,config
+ogbn-products,GT3D,4,561.4,(1;1;4)
+ogbn-products,GT3D,16,250.6,(2;2;4)
+ogbn-products,GT3D,64,130.7,(4;4;4)
+ogbn-products,2D,4,655.6,2x2
+ogbn-products,2D,16,277.5,4x4
+ogbn-products,2D,64,159.6,8x8
+ogbn-products,1D,4,630.5,4x1
+ogbn-products,1D,16,381.7,16x1
+ogbn-products,1D,64,224.9,64x1
+ogbn-products,Head only,4,561.4,(1;1;4)
+ogbn-products,Ring,4,876.2,4x1
+ogbn-products,Ring,16,571.5,16x1
+ogbn-products,Ring,64,599.0,64x1
+Reddit,GT3D,4,184.9,(1;1;4)
+Reddit,GT3D,16,70.1,(2;2;4)
+Reddit,GT3D,64,37.9,8x8
+Reddit,2D,4,223.9,2x2
+Reddit,2D,16,74.1,4x4
+Reddit,2D,64,37.9,8x8
+Reddit,1D,4,248.9,4x1
+Reddit,1D,16,93.7,16x1
+Reddit,1D,64,66.6,64x1
+Reddit,Head only,4,184.9,(1;1;4)
+Reddit,Ring,4,245.5,4x1
+Reddit,Ring,16,140.1,16x1
+Reddit,Ring,64,499.9,64x1

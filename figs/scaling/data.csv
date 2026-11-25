@@ -1,0 +1,40 @@
+# Strong scaling of the attention-only Exphormer (4 layers, width 128, 4 heads) on the frozen chain of 2026-10-31: LN, TF32,
+# bf16 wire, pre-collective sync, first-major segment combine, compiled owned-row tail, pipelined backward column
+# reduce-scatter chosen by the model (--bwd_sub 0), sparsity-aware collectives under the plan's rule (--sparse_comm); ms per
+# epoch, 6 timing epochs, hbm40g nodes.  GT3D = configuration picked by the model (head grid, or the fused grid where the
+# model prefers it: Reddit at 64 GPUs); 2D = best fused 2D grid with P_o > 1; 1D = grid (P,1) (GP-AG, x-gather); Head
+# only = (1,1,P), P <= H = 4 (GP-A2A); Ring = ring layer on (P,1).  Jobs 60628818 (4 GPUs), 60628819 / 60628990 (16),
+# 60628820 (64), 60628994 (4-GPU ring), 60628821 (256; no ring run there).  Reddit's GT3D at 256 GPUs is the model's
+# pick (fused 32x8, 39.2) although the head grid (8,8,4) measured 36.5.  Previous chain: data_2026-10-18.csv.
+graph,series,gpus,ms,config
+ogbn-products,GT3D,4,549.1,(1;1;4)
+ogbn-products,GT3D,16,222.1,(2;2;4)
+ogbn-products,GT3D,64,109.5,(4;4;4)
+ogbn-products,GT3D,256,71.9,(8;8;4)
+ogbn-products,2D,4,632.4,2x2
+ogbn-products,2D,16,233.5,4x4
+ogbn-products,2D,64,114.2,8x8
+ogbn-products,2D,256,84.9,16x16
+ogbn-products,1D,4,601.6,4x1
+ogbn-products,1D,16,311.6,16x1
+ogbn-products,1D,64,229.6,64x1
+ogbn-products,1D,256,453.4,256x1
+ogbn-products,Head only,4,549.1,(1;1;4)
+ogbn-products,Ring,4,806.1,4x1
+ogbn-products,Ring,16,607.0,16x1
+ogbn-products,Ring,64,495.2,64x1
+Reddit,GT3D,4,173.0,(1;1;4)
+Reddit,GT3D,16,64.1,(2;2;4)
+Reddit,GT3D,64,34.7,8x8
+Reddit,GT3D,256,39.2,32x8
+Reddit,2D,4,221.8,2x2
+Reddit,2D,16,71.9,4x4
+Reddit,2D,64,34.7,8x8
+Reddit,2D,256,39.2,32x8
+Reddit,1D,4,230.9,4x1
+Reddit,1D,16,89.7,16x1
+Reddit,1D,64,72.3,64x1
+Reddit,Head only,4,173.0,(1;1;4)
+Reddit,Ring,4,237.4,4x1
+Reddit,Ring,16,127.8,16x1
+Reddit,Ring,64,398.4,64x1

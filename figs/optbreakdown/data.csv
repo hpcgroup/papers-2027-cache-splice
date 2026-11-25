@@ -1,0 +1,13 @@
+# gt3d/scripts/sbatch_opt_breakdown.sh (ogbn-products) and sbatch_opt_breakdown_papers.sh (ogbn-papers100M),
+# parsed by gt3d/bench/parse_opt_breakdown.py (see its docstring for the columns).  Width 128, 8 heads, 4 layers,
+# the grid of the paper's figures at this GPU count.  Times in ms per epoch; attn / other / ag / rs / a2a / ar are
+# self times of the --timers run (mean over ranks) and add up to step_timers_ms.
+graph,gpus,grid,n_sub,hidden,heads,variant,sov,bsub,sparse,epoch_ms,epoch_timers_ms,step_timers_ms,attn,other,ag,rs,a2a,ar,peak_gb,log
+ogbn-products,64,4x2x8,1,128,8,base,1,1,0,122.7,121.6,120.7,38.4,10.7,21.7,24.3,22.4,3.2,1.9,sbatch_opt_breakdown_61901527.log
+ogbn-products,64,4x2x8,1,128,8,sparse,1,1,r1c1,132.5,131.6,130.6,38.4,11.4,31.0,27.7,19.9,2.2,1.9,sbatch_opt_breakdown_61901527.log
+ogbn-products,64,4x2x8,1,128,8,overlap,1,2,0,109.9,113.0,112.1,42.8,9.9,22.7,8.9,25.8,2.1,2.0,sbatch_opt_breakdown_61901527.log
+ogbn-products,64,4x2x8,1,128,8,full,1,2,r0c0,115.9,112.1,111.5,41.5,10.3,23.9,9.3,25.0,1.4,2.0,sbatch_opt_breakdown_61901527.log
+ogbn-papers100M,256,32x8,16,128,8,base,0,1,0,4671.3,4671.3,4669.8,767.9,913.0,1956.2,1023.0,0.0,9.8,14.2,sbatch_opt_breakdown_papers_61902862.log
+ogbn-papers100M,256,32x8,16,128,8,sparse,0,1,r0c1,3424.5,3424.5,3423.3,704.8,613.8,1360.8,725.0,0.0,18.9,14.5,sbatch_opt_breakdown_papers_61902862.log
+ogbn-papers100M,256,32x8,16,128,8,overlap,1,1,0,3677.4,3677.4,3675.9,918.5,983.9,1487.9,267.9,0.0,17.7,14.6,sbatch_opt_breakdown_papers_61902862.log
+ogbn-papers100M,256,32x8,16,128,8,full,1,1,r0c1,2875.8,2875.8,2874.7,728.2,655.6,1208.9,261.2,0.0,20.9,14.9,sbatch_opt_breakdown_papers_61902862.log

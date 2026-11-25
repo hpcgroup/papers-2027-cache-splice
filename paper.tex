@@ -1,0 +1,107 @@
+\documentclass[sigconf]{acmart}
+\settopmatter{printacmref=false}
+% \settopmatter{printfolios=false}
+
+\AtBeginDocument{%
+  \providecommand\BibTeX{{%
+    Bib\TeX}}}
+
+\setcopyright{none}
+%\setcopyright{acmlicensed}
+\copyrightyear{2027}
+\acmYear{2027}
+\acmDOI{XXXXXXX.XXXXXXX}
+
+\acmConference[ICS '27]{The 41st ACM International Conference on
+  Supercomputing}{2027}{}
+\acmISBN{000-0-0000-0000-0/00/00}
+
+\usepackage{amsmath,amsfonts}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{ctable}
+\usepackage{multirow}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{xspace}
+\usepackage{bm}
+\usepackage{soul}
+\usepackage{annotate-equations}
+\numberwithin{equation}{section}
+
+% Plexus palette (color-blind safe), shared by equations, algorithms and plots
+\definecolor{color_1}{HTML}{009E73} % green
+\definecolor{color_2}{HTML}{D55E00} % red
+\definecolor{color_3}{HTML}{0072B2} % blue
+\definecolor{color_4}{HTML}{000000} % black
+\definecolor{color_5}{HTML}{E69F00} % gold
+\definecolor{color_6}{HTML}{CC79A7} % pink
+\colorlet{soul_1}{color_1!20}
+\colorlet{soul_2}{color_2!20}
+\colorlet{soul_3}{color_3!20}
+\colorlet{soul_4}{color_4!20}
+\colorlet{soul_5}{color_5!20}
+\colorlet{soul_6}{color_6!20}
+\newcommand{\highlight}[2]{\sethlcolor{#1}\hl{#2}}
+
+\newcommand{\fix}[1]{\textcolor[rgb]{1.0,0.0,0.0}{#1}}
+\newcommand{\tweakedsim}{\raise.17ex\hbox{$\scriptstyle\mathtt{\sim}$}}
+\newcommand{\tech}{\textsc{CacheSplice}\xspace}
+
+\begin{document}
+
+\title{\tech: Memory-efficient Self-speculative Inference System}
+
+% \subtitle{\normalsize{ICS 2027 Submission \textbf{\#XXX} -- Confidential Draft -- Do NOT Distribute!!}}
+
+\author{Anonymous Author(s)}
+\renewcommand{\shortauthors}{Anon et al.}
+% \renewcommand{\shortauthors}{Wei et al.}
+
+\begin{abstract}
+\input{abstract}
+\end{abstract}
+
+% \keywords{}
+
+\maketitle
+
+\section{Introduction}
+\label{sec:intro}
+\input{intro}
+
+\section{Demystifying Existing Inference Optimization: Limitations and Key Insights}
+\label{sec:bg}
+\input{bg}
+
+\section{\tech: Memory-efficient Self-Speculative Inference System}
+\label{sec:method}
+\input{method}
+
+\section{\tech: Detailed Design}
+\label{sec:detail}
+\input{detail}
+
+\section{Evaluation}
+\label{sec:evaluation}
+\input{evaluation}
+
+
+
+\section{Related Work}
+\label{related}
+\input{related}
+
+\section{Conclusion}
+\label{sec:conc}
+\input{conc}
+
+% \section*{Acknowledgment}
+% \input{ack}
+
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{./bib/cite}
+
+\end{document}

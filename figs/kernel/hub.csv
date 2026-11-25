@@ -1,0 +1,11 @@
+# ogbn-arxiv with and without one global token connected to and from every node (169K edges in one row and one
+# column); ms of one call.  Source: gt3d/RESULTS.md 2026-10-17 E1, "Hub / global token (E2, first point)".
+config,pass,impl,without_ms,with_ms
+2x40,forward,cuSPARSE,15.2,102.4
+2x40,backward,PyG,89.0,479.5
+2x40,forward,GT3D,2.42,2.44
+2x40,backward,GT3D,9.57,10.80
+8x32,forward,cuSPARSE,46.5,430.8
+8x32,backward,PyG,144.3,531.5
+8x32,forward,GT3D,5.73,5.76
+8x32,backward,GT3D,19.65,20.86

@@ -1,0 +1,7 @@
+# Mean attention degree (graph edges + self loop + 6 expander edges per node) used by the analytic share model
+# (gt3d/dist/grid_select.py::sparse_share); kappa = dispersion of the negative-binomial out-degree tail (grid_select.SHARE_KAPPA,
+# fitted on the measured plan shares, RESULTS 2026-11-02); source of d_attn: gt3d/RESULTS.md 2026-10-17.
+graph,d_attn,kappa
+ogbn-products,57.7,0.61
+ogbn-papers100M,36.2,0.45
+Reddit,499

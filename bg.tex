@@ -1,0 +1,25 @@
+
+In this section, the goal is to have 3-4 paragraphs, explain existing frameworks and limitations, mention challenges (it is hard to do them all simultaneously), propose several insights (of course we are based on self-speculative decoding, but there should 2-3 specific key insights that guide our methodology design).
+AI should formalize the structure and add appropriate citations (we put related papers at the end, AI should consider it). Also, the defnition and key words AI should understand and phrase it carefully.
+We plan to mention long context in the introduction part. So we assume in this section, we already mainly focus on the long-context inference.
+
+Let's analyze the several main optimizations here:
+Current mainstream inference framework. We will analyze from three perspectives: Accuracy, Memory Consumption, Speed.
+1. Just Inference (vllm, sglang). The accuracy should be very high, since this is the golden run! Memory consumption is bad, becasue no optmizations (but not like speculative decoding, we didn't sacrifise it as well. Long contex super bad.). Speed, bad, no optimizations.
+2. Inference with Offloading: Accuracy as good as just inference. Memory consumption is also good, because all kv cache is offloaded to CPU (even part of model itself). \cite{zhang2023h2o} But speed is super super bad. Data movement overhead is critical even for NVLINK-C2C.
+3. Inference with KV Cache Compression. Memory comsption is optimized (but we cannot say it is good or not). Speed is ok (not good not bad, since speed optimizations can be orthorgonal with compression/quantiation algorithms). But accuracy is very very dependent (higher footprint saving means lower accuracy, that's a clear trade-off).
+4. Speculative Decoding: Speed is good at short context length, long context it will has very low acceprtance rate. Memrmoy consumption is awlful, even cannot satisfy serving scenario (not only it is suitable for large model, it also introduces a small model to bring high memory consumption, and you will have two part KV cache.). Accuracy is as good as just inference. There is also Eagle algorithm, memory optimization on long context scenario is bad. Speed, very good, highly optimized.
+5. Self-Speculative Decoding. This is where our method is based on. Remember cite appropriately. Accuracy is guaranteed; speed is also good. But memory consumption is bad, because we have to store two KVs. QuantSpec has one split KV, but two different models, still high memory consumption.
+Aforementioned are some of our analysis, what we want to emphasize:
+1. There is never a good solution that satisfy all three requirments.
+2. We do not want reviewers feel our method is based on self-speculative decoding. (or the incremental contribution may somehow downvalue this work from reviewer's perspctive)
+3. We may want a table to sumamarize everything with concise words/phrases.
+4. In all, analyze all the limitations.
+
+
+Mention it is super super hard to do them at the same time.
+
+
+1. Self-speculative is a good method. model-level reuse - save memory, guarantee speed. More importantly, it VEIRIES! KV cache comrpession is great, but how goood is good? We have to verify lossy method to check whether is satisfy user scenario. But it has some problem ... -> propose the first insight.
+2. Context should be reused. kv-cache-level reuse - further saving memory.
+3. find a tricky way to verify smartly (Attention score is naturally sparse)

@@ -1,0 +1,38 @@
+# One sparse attention layer of a plain GT (graph edges + self loops, one edge type, dot-product scores, exact per-row
+# softmax), forward ms of one call on one A100-SXM4-40GB (mean of 10 after 3 warm-up calls), fp32. Empty = out of memory
+# (PyG) or no DF-GNN variant that is correct and fits the block (variant = the DF-GNN kernel of the reported time).
+# Rank-(0,0) blocks of the grids: arxiv = full graph, products 4x4 = products16, Reddit 2x2 = reddit4, products 2x2 = products4.
+# Source: gt3d/logs/sbatch_kernel_softmax_61598117.log (bench/bench_kernel_external.py --plain --norm softmax), make_data.py.
+block,edges_M,config,impl,fwd_ms,variant
+arxiv,2.5,2x40,PyG,13.50,
+arxiv,2.5,2x40,cuSPARSE,7.70,
+arxiv,2.5,2x40,DF-GNN,,
+arxiv,2.5,2x40,GT3D,1.77,
+arxiv,2.5,8x32,PyG,35.15,
+arxiv,2.5,8x32,cuSPARSE,26.69,
+arxiv,2.5,8x32,DF-GNN,17.55,tiling
+arxiv,2.5,8x32,GT3D,4.68,
+products 4x4,7.9,2x40,PyG,42.34,
+products 4x4,7.9,2x40,cuSPARSE,46.15,
+products 4x4,7.9,2x40,DF-GNN,8.17,hyper_inf
+products 4x4,7.9,2x40,GT3D,6.01,
+products 4x4,7.9,8x32,PyG,113.64,
+products 4x4,7.9,8x32,cuSPARSE,136.68,
+products 4x4,7.9,8x32,DF-GNN,23.83,hyper
+products 4x4,7.9,8x32,GT3D,17.31,
+Reddit 2x2,28.9,2x40,PyG,157.48,
+Reddit 2x2,28.9,2x40,cuSPARSE,40.44,
+Reddit 2x2,28.9,2x40,DF-GNN,,
+Reddit 2x2,28.9,2x40,GT3D,9.06,
+Reddit 2x2,28.9,8x32,PyG,,
+Reddit 2x2,28.9,8x32,cuSPARSE,115.28,
+Reddit 2x2,28.9,8x32,DF-GNN,73.77,tiling
+Reddit 2x2,28.9,8x32,GT3D,23.91,
+products 2x2,31.6,2x40,PyG,168.58,
+products 2x2,31.6,2x40,cuSPARSE,189.60,
+products 2x2,31.6,2x40,DF-GNN,45.58,hyper_inf
+products 2x2,31.6,2x40,GT3D,19.53,
+products 2x2,31.6,8x32,PyG,,
+products 2x2,31.6,8x32,cuSPARSE,594.61,
+products 2x2,31.6,8x32,DF-GNN,103.66,tiling
+products 2x2,31.6,8x32,GT3D,56.44,

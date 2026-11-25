@@ -1,0 +1,12 @@
+paper.aux
+paper.fdb_latexmk
+paper.fls
+paper.log
+paper.pdf
+paper.synctex.gz
+paper.bbl
+paper.blg
+paper.out
+outline.md
+bk/
+__pycache__/

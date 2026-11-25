@@ -1,0 +1,26 @@
+# Strong scaling of GT3D against TorchGT, comparison-only setting (2026-11-10): TorchGT parallelizes only the head axis
+# (P <= H), so both run 32 heads at width 128 (d_h = 4), 4 layers, on 4 / 8 / 16 / 32 A100-40GB GPUs (1 / 2 / 4 / 8 nodes).
+# GT3D: attention-only Exphormer on the whole graph, frozen chain (LN, TF32, bf16 wire, compiled tail, --sparse_comm), the
+# model's pick (--head_auto), STEADY ms per epoch over 6 timing epochs.  TorchGT: the RELEASED code (commit 44a3c52,
+# torchgt_orig_split) with the OGB official split only, its GT model, its scripts' arguments (arxiv main_sp_node_level.py
+# seq_len 64000, products main_sp_sparse_node_level.py seq_len 870000, --attn_type sparse --reorder), no evaluation; median
+# of its own "Epoch Time" over epochs 5-12.  One TorchGT epoch covers only the induced subgraph of the training nodes with
+# random dense blocks, so absolute times of the two systems measure different work.  The figure shows ogbn-products only.
+# Source: scripts/sbatch_heads32.sh, jobs 61110789 / 61110790 / 61110791 / 61110794 (logs/sbatch_heads32_<job>.log).
+graph,system,gpus,ms,config
+ogbn-arxiv,GT3D,4,38.0,(1;1;4)
+ogbn-arxiv,GT3D,8,43.8,(8;1;1)
+ogbn-arxiv,GT3D,16,42.4,(2;8;1)
+ogbn-arxiv,GT3D,32,33.2,8x4
+ogbn-arxiv,TorchGT,4,46,
+ogbn-arxiv,TorchGT,8,67,
+ogbn-arxiv,TorchGT,16,75,
+ogbn-arxiv,TorchGT,32,86,
+ogbn-products,GT3D,4,933.8,(1;1;4)
+ogbn-products,GT3D,8,522.2,(2;1;4)
+ogbn-products,GT3D,16,307.8,(4;1;4)
+ogbn-products,GT3D,32,183.8,(4;1;8)
+ogbn-products,TorchGT,4,273,
+ogbn-products,TorchGT,8,182,
+ogbn-products,TorchGT,16,130,
+ogbn-products,TorchGT,32,107,

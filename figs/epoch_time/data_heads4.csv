@@ -1,0 +1,52 @@
+# Sec. 7.2: time per epoch of the attention-only Exphormer (4 layers, width 128, 4 heads), ms, on the frozen chain of
+# 2026-10-31 (LN, TF32, bf16 wire, pre-collective sync, compiled owned-row tail, --bwd_sub 0, --sparse_comm under the plan's
+# rule); hbm40g nodes, 6 timing epochs.  GT3D = configuration picked by the model; GP-AG = fused grid (P,1) (x gather);
+# GP-A2A = head grid (1,1,P), P <= H = 4 only.  Jobs 60628818 (4 GPUs), 60628819 (16), 60628820 (64), 60628821 (256), the
+# same rows as figs/scaling/data.csv.  Reddit stops at 64 GPUs (GP-AG not run at 256).
+# TorchGT: its GT model (gt_dist_node_level.py) at width 128 / 4 heads / 4 layers on its own 870K-node ogbn-products batch,
+# 4 GPUs (sequence parallel, P <= H), paper-faithful copy on the OGB official split; median "Epoch Time" of 496 epochs of
+# job 61018457 (logs/sbatch_tta_torchgt_61018457.log).  One TorchGT epoch covers only the induced subgraph of the 196,615
+# training nodes (11.1M edges), not the whole graph.  Reddit is not among TorchGT's datasets.
+# ogbn-arxiv (2026-11-09): the same chain, attention-only Exphormer h128 / 4 heads in memory; jobs 61046041 / 61046042 /
+# 61046043 (4 / 8 / 16 GPUs, logs/sbatch_epoch_arxiv_<job>.log); TorchGT job 61046044, its GT model h128 / 4 heads on its
+# 64K-node arxiv batches (2 iterations per epoch), median "Epoch Time" of 26 epochs.  arxiv is launch-bound (~30 ms).
+# 8 / 32 / 128 / 512 GPUs (2026-11-08..10): sbatch_scaling_ext jobs 61018449 / 61018450 / 61018451 / 61018452, same chain,
+# GT3D by --head_auto.  GP-AG at 512 GPUs is left out: the plan's rule switches its column gather to the sparse collective
+# there (share 0.104), so it is no longer Lin et al.'s dense GP-AG (98.7 ms); every other GP-AG point is dense.
+graph,series,gpus,ms,config
+ogbn-products,GT3D,4,549.1,(1;1;4)
+ogbn-products,GT3D,8,330.1,(2;1;4)
+ogbn-products,GT3D,16,222.1,(2;2;4)
+ogbn-products,GT3D,32,146.8,(4;2;4)
+ogbn-products,GT3D,64,109.5,(4;4;4)
+ogbn-products,GT3D,128,89.5,(8;4;4)
+ogbn-products,GT3D,256,71.9,(8;8;4)
+ogbn-products,GT3D,512,62.6,(16;8;4)
+ogbn-products,GP-A2A,4,549.1,(1;1;4)
+ogbn-products,GP-AG,4,601.6,4x1
+ogbn-products,GP-AG,8,415.7,8x1
+ogbn-products,GP-AG,16,311.6,16x1
+ogbn-products,GP-AG,32,256.7,32x1
+ogbn-products,GP-AG,64,229.6,64x1
+ogbn-products,GP-AG,128,220.9,128x1
+ogbn-products,GP-AG,256,453.4,256x1
+ogbn-products,TorchGT,4,1244.0,
+Reddit,GT3D,4,173.0,(1;1;4)
+Reddit,GT3D,8,98.8,(2;1;4)
+Reddit,GT3D,16,64.1,(2;2;4)
+Reddit,GT3D,32,46.9,(4;2;4)
+Reddit,GT3D,64,34.7,8x8
+Reddit,GP-A2A,4,173.0,(1;1;4)
+Reddit,GP-AG,4,230.9,4x1
+Reddit,GP-AG,8,131.4,8x1
+Reddit,GP-AG,16,89.7,16x1
+Reddit,GP-AG,32,86.0,32x1
+Reddit,GP-AG,64,72.3,64x1
+ogbn-arxiv,GT3D,4,30.2,(1;1;4)
+ogbn-arxiv,GT3D,8,28.7,(2;1;4)
+ogbn-arxiv,GT3D,16,26.5,(2;2;4)
+ogbn-arxiv,GP-A2A,4,29.9,(1;1;4)
+ogbn-arxiv,GP-AG,4,35.4,4x1
+ogbn-arxiv,GP-AG,8,32.6,8x1
+ogbn-arxiv,GP-AG,16,26.6,16x1
+ogbn-arxiv,TorchGT,4,511.0,

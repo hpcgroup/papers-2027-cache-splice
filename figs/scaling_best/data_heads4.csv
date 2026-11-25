@@ -1,0 +1,30 @@
+# Sec. 7.4: strong scaling of GT3D (the configuration the model picks), seconds per epoch, frozen chain of 2026-10-31 (LN,
+# TF32, bf16 wire, pre-collective sync, compiled owned-row tail, --bwd_sub 0, --sparse_comm under the plan's rule), hbm40g.
+# ogbn-products and Reddit: attention-only Exphormer, 4 layers, width 128, 4 heads.  4 / 16 / 64 / 256 GPUs: jobs
+# 60628818-60628821 (figs/scaling/data.csv); 8 / 32 / 128 GPUs: sbatch_scaling_ext jobs 61018449 / 61018450 / 61018451
+# (2026-11-08/09, --head_auto).  Reddit stops at 64 GPUs (latency-bound beyond: 39.2 ms on 256 GPUs, 32x8).
+# ogbn-papers100M: Exphormer with its GCN branch, width 64, 4 heads, streamed layer with 16 sub-blocks; 64 GPUs 16x4 and 256
+# GPUs 64x4 (RESULTS 2026-10-31), 128 GPUs 32x4 picked by --grid_auto (job 61018451), 512 GPUs 256x2 with 8 sub-blocks
+# (job 61078511) and 1,024 GPUs 512x2 with 4 sub-blocks (job 61078512), both picked by --grid_auto; n_sub must divide the
+# owned chunk n_pad / P = 2^12 * 27115 / P.  Fastest of repeated runs of a configuration: 256x2 921.3 / 1087.2 ms, 512x2
+# 528.8 / 585.5 ms.  ogbn-products 512 GPUs: (16,8,4) picked by --head_auto (job 61018452).  The 32-GPU papers100M point
+# (7.3 s) is left out: it predates the chain (IEEE matmuls).
+graph,gpus,s,config
+ogbn-products,4,0.5491,(1;1;4)
+ogbn-products,8,0.3301,(2;1;4)
+ogbn-products,16,0.2221,(2;2;4)
+ogbn-products,32,0.1468,(4;2;4)
+ogbn-products,64,0.1095,(4;4;4)
+ogbn-products,128,0.0895,(8;4;4)
+ogbn-products,256,0.0719,(8;8;4)
+ogbn-products,512,0.0626,(16;8;4)
+Reddit,4,0.1730,(1;1;4)
+Reddit,8,0.0988,(2;1;4)
+Reddit,16,0.0641,(2;2;4)
+Reddit,32,0.0469,(4;2;4)
+Reddit,64,0.0347,8x8
+ogbn-papers100M,64,3.4960,16x4
+ogbn-papers100M,128,2.1768,32x4
+ogbn-papers100M,256,1.5155,64x4
+ogbn-papers100M,512,0.9213,256x2
+ogbn-papers100M,1024,0.5288,512x2
